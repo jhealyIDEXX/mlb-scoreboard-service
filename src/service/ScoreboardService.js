@@ -13,15 +13,34 @@ class ScoreboardService {
 
     }
 
-    sortScoreboardByTeamId = (scoreboard, teamId) => {
-        const checkGameForTeam = (game) => {
-            return game.teams.away.team.id == teamId || game.teams.home.team.id == teamId;
-        }
+    checkGameForTeam = (game, teamId) => {
+        return game.teams.away.team.id == teamId || game.teams.home.team.id == teamId;
+    }
 
+    sortScoreboardByTeamId = (scoreboard, teamId) => {
         let newScoreboard = scoreboard;
-        newScoreboard.dates[0].games = scoreboard.dates[0].games.sort((a,b) => { return checkGameForTeam(a) ? -1 : checkGameForTeam(b) ? 1 : 0; });
+        newScoreboard.dates[0].games = scoreboard.dates[0].games.sort((a,b) => { 
+            return this.checkGameForTeam(a, teamId) ? -1 : this.checkGameForTeam(b, teamId) ? 1 : 0; 
+        });
 
         return newScoreboard;
+    }
+
+    validateSchedule = (scheduleRespopnse, teamId) => {
+        if(scheduleRespopnse.totalGames == 0 || scheduleRespopnse.totalItems == 0){
+            console.log(`No game data returned from MLB API`);
+            return false;
+        }
+
+        //dont sort the schedule if the provided team isn't playing on that day
+        const gamesWithTeam = scheduleRespopnse.dates[0].games.filter((game) => {
+            return this.checkGameForTeam(game, teamId);
+        });
+        if(gamesWithTeam.length == 0){
+            console.log(`TeamId: ${teamId} has 0 games for date: ${date}`);
+            return false;
+        }
+        return true;
     }
 
     getScoreboardForDate = async (date) => {
@@ -35,8 +54,8 @@ class ScoreboardService {
 
     getScoreboardForDateAndTeam = async (date, teamId) => {
         try {
-            const scoreboard = await this.getScoreboardForDate(date);
-            return this.sortScoreboardByTeamId(scoreboard, teamId);
+            const scheduleRespopnse = await this.getScoreboardForDate(date);
+            return this.validateSchedule(scheduleRespopnse, teamId) ? this.sortScoreboardByTeamId(scheduleRespopnse, teamId) : scheduleRespopnse;
         } catch (err) {
             throw err;
         }

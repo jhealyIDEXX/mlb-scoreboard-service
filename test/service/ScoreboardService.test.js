@@ -12,8 +12,8 @@ describe('Scoreboard Service', () => {
 
     before(() => {
         mlbScheduleApi = new MLBScheduleAPI();
-        getScheduleStub = sinon.stub(mlbScheduleApi, "getSchedule");
-        getScheduleStub.withArgs(date).returns(mockScheduleAPIResponse);
+        getScheduleStub = sinon.stub(mlbScheduleApi, "getSchedule")
+            .withArgs(date).returns(mockScheduleAPIResponse);
         scoreboardService = new ScoreboardService(mlbScheduleApi);
     });
     afterEach(() => {
