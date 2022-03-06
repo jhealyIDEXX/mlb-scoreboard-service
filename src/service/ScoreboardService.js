@@ -19,8 +19,23 @@ class ScoreboardService {
 
     sortScoreboardByTeamId = (scoreboard, teamId) => {
         let newScoreboard = scoreboard;
-        newScoreboard.dates[0].games = scoreboard.dates[0].games.sort((a,b) => { 
-            return this.checkGameForTeam(a, teamId) ? -1 : this.checkGameForTeam(b, teamId) ? 1 : 0; 
+        newScoreboard.dates[0].games = scoreboard.dates[0].games.sort((a,b) => {
+            if(this.checkGameForTeam(a, teamId) && this.checkGameForTeam(b, teamId)){
+                //if second game is in progress return that first. (wasn't sure what the code for live was)
+                if(b.status.codedGameState != 'F' && b.status.codedGameState != 'S'){
+                    return 1;
+                }
+                //Sort chronologically
+                const aGameDate = Date.parse(a.gameDate);
+                const bGameDate = Date.parse(b.gameDate);
+                return aGameDate < bGameDate ? -1 : bGameDate < aGameDate ? 1 : 0;
+            } else if (this.checkGameForTeam(a, teamId)) {
+                return -1;
+            } else if (this.checkGameForTeam(b, teamId)) {
+                return 1;
+            } else {
+                return 0;
+            }
         });
 
         return newScoreboard;

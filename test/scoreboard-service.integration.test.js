@@ -1,9 +1,11 @@
 const app = require('../src/app');
 const expect = require('chai').expect;
 const supertest = require('supertest');
+const statsApiMocks = require('./service/statsapiMocks');
 
 const date = '2021-09-19';
 const dateWithNoGames = '2021-01-01';
+const doubleHeaderDate = statsApiMocks.doubleHeaderMockResponse.dates[0].date;
 const teamId = 121;
 
 describe('Scoreboard service API integration tests', async () => {
@@ -28,4 +30,15 @@ describe('Scoreboard service API integration tests', async () => {
             throw err;
         }
     });
+
+    it('should properly sort double headers', async() => {
+        const urlString = `/scoreboard?date=${doubleHeaderDate}&teamId=${teamId}`;
+        try { 
+            const res = await supertest(app).get(urlString);
+            expect(res.status, 'response status: ').to.equal(200);
+            expect(res.body.totalGames, 'response body, total games:').to.equal(statsApiMocks.doubleHeaderMockResponse.totalGames);
+        } catch (err) {
+            throw err;
+        }
+    })
 })
