@@ -37,6 +37,12 @@ describe('Scoreboard service API integration tests', async () => {
             const res = await supertest(app).get(urlString);
             expect(res.status, 'response status: ').to.equal(200);
             expect(res.body.totalGames, 'response body, total games:').to.equal(statsApiMocks.doubleHeaderMockResponse.totalGames);
+            const firstGame = res.body.dates[0].games[0];
+            const secondGame = res.body.dates[0].games[1];
+
+            expect(firstGame.teams.home.team.id, 'first game teamId').to.equal(teamId);
+            expect(secondGame.teams.home.team.id, 'second game teamId').to.equal(teamId);
+            expect(Date.parse(firstGame.gameDate), 'first game gameDate').to.be.lessThan(Date.parse(secondGame.gameDate));
         } catch (err) {
             throw err;
         }

@@ -40,6 +40,11 @@ describe('Scoreboard Service', async () => {
         const sortedScoreboard = await scoreboardService.getScoreboardForDateAndTeam(doubleHeaderDate, teamId);
         expect(sortedScoreboard.dates[0].date, 'sorted scoreboard: date').to.equal(doubleHeaderDate);
         expect(sortedScoreboard.dates[0].totalGames, 'sorted scoreboard: total games').to.equal(mockDoubleHeaderResponse.dates[0].totalGames);
-        expect(scoreboardService.checkGameForTeam(sortedScoreboard.dates[0].games[0], teamId), 'provided teamId is in first game').to.be.true;
+        
+        const firstGame = sortedScoreboard.dates[0].games[0];
+        const secondGame = sortedScoreboard.dates[0].games[1];
+        expect(scoreboardService.checkGameForTeam(firstGame, teamId), 'provided teamId is in first game').to.be.true;
+        expect(scoreboardService.checkGameForTeam(secondGame, teamId), 'provided teamId is in second game').to.be.true;
+        expect(Date.parse(firstGame.gameDate), 'first game gameDate').to.be.lessThan(Date.parse(secondGame.gameDate));
     });
 });
