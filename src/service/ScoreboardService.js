@@ -52,7 +52,7 @@ class ScoreboardService {
             return this.checkGameForTeam(game, teamId);
         });
         if(gamesWithTeam.length == 0){
-            console.log(`TeamId: ${teamId} has 0 games for date: ${date}`);
+            console.log(`TeamId: ${teamId} has 0 games on this day`);
             return false;
         }
         return true;
