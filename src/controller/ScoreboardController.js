@@ -11,10 +11,11 @@ class ScoreboardController {
     
     processScoreBoardRequest = async (req, res) => {
         const {teamId, date} = req.query;
-
+        console.log(`Request recieved for team: ${teamId} and date: ${date}`);
         if(this.scoreboardService.isDateValid(date)){
             try { 
                 let payload = await (teamId ? this.scoreboardService.getScoreboardForDateAndTeam(date, teamId) : this.scoreboardService.getScoreboardForDate(date));
+                console.log('200: success');
                 return res.status(200).json(payload);
             } catch (err) { 
                 console.log(err);
