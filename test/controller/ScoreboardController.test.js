@@ -16,7 +16,7 @@ describe('Scoreboard Controller unit test', () => {
         getScoreBoardForTeamAndDateStub = sinon.stub(scoreboardService, "getScoreboardForDateAndTeam");
         getScoreboardForDateStub = sinon.stub(scoreboardService, "getScoreboardForDate");
         scoreboardController = new ScoreboardController(scoreboardService);
-        getScoreBoardForTeamAndDateStub.withArgs(teamId, date).returns('sorted list');
+        getScoreBoardForTeamAndDateStub.withArgs(date, teamId).returns('sorted list');
         getScoreboardForDateStub.withArgs(date).returns('unsorted list');
 
         status = sinon.stub();
