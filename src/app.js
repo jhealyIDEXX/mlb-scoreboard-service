@@ -1,6 +1,4 @@
 const express = require('express');
-
-const express = require('express');
 const Constants = require('./constants')
 
 const app = express();

@@ -30,7 +30,7 @@ describe('Scoreboard Controller unit test', () => {
 
     it('Should return 200 successful and contain sorted list in payload', async () => {
         let req = { query: { "teamId": teamId, "date": date } };
-        scoreboardController.processScoreBoardRequest(req, res);
+        await scoreboardController.processScoreBoardRequest(req, res);
 
         expect(getScoreBoardForTeamAndDateStub.calledOnce, 'scoreboardService calls').to.be.true;
         expect(status.args[0][0], 'response status').to.equal(200);
@@ -39,7 +39,7 @@ describe('Scoreboard Controller unit test', () => {
 
     it('Should still return 200 success with unsorted list in payload when missing teamId param', async () => {
         let req = { query: { "date": date } };
-        scoreboardController.processScoreBoardRequest(req, res)
+        await scoreboardController.processScoreBoardRequest(req, res)
         expect(getScoreboardForDateStub.calledOnce, 'scoreboardService calls').to.be.true;
         expect(status.args[0][0], 'response status').to.equal(200);
         expect(json.args[0][0], 'response payload').to.equal('unsorted list');
@@ -47,24 +47,24 @@ describe('Scoreboard Controller unit test', () => {
 
     it('Should return 400 error when both query params', async () => {
         let req = { query: {} };
-        scoreboardController.processScoreBoardRequest(req, res)
+        await scoreboardController.processScoreBoardRequest(req, res)
         expect(status.args[0][0], 'response status').to.equal(400);
         expect(json.args[0][0].message, 'response payload').to.equal('invalid or missing date query param\n Date is a required paramater, and must be formatted: YYYY-MM-DD');
     });
 
     it('Should return 400 error when sending invalid date', async () => {
         let req = { query: { "teamId": teamId, "date": "oops" } };
-        scoreboardController.processScoreBoardRequest(req, res)
+        await scoreboardController.processScoreBoardRequest(req, res)
         expect(status.args[0][0], 'nondate response status').to.equal(400);
         expect(json.args[0][0].message, 'nondate response payload').to.equal('invalid or missing date query param\n Date is a required paramater, and must be formatted: YYYY-MM-DD');
 
         req = { query: { "teamId": teamId, "date": "2022/03/05" } };
-        scoreboardController.processScoreBoardRequest(req, res)
+        await scoreboardController.processScoreBoardRequest(req, res)
         expect(status.args[0][0], 'yyy/mm/dd response status').to.equal(400);
         expect(json.args[0][0].message, 'yyy/mm/dd response payload').to.equal('invalid or missing date query param\n Date is a required paramater, and must be formatted: YYYY-MM-DD');
 
         req = { query: { "teamId": teamId, "date": "2022.03.05" } };
-        scoreboardController.processScoreBoardRequest(req, res)
+        await scoreboardController.processScoreBoardRequest(req, res)
         expect(status.args[0][0], 'yyy.mm.dd response status').to.equal(400);
         expect(json.args[0][0].message, 'yyy.mm.dd response payload').to.equal('invalid or missing date query param\n Date is a required paramater, and must be formatted: YYYY-MM-DD');
 
